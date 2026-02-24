@@ -121,8 +121,8 @@ async function loadProjects() {
 
     // Render known projects in fixed order, then append any new ones at the end
     const KNOWN_ORDER = [
-      'nola-crime-dashboard', 'fpa-lens', 'govdash', 'police-staffing-dashboard',
-      'nola-dashboard', 'lmpd-analytics', 'smc-beach-safety', 'nopd-bias-demo',
+      'lmpd-analytics', 'fpa-lens', 'nola-crime-dashboard', 'police-staffing-dashboard',
+      'nola-dashboard', 'govdash', 'smc-beach-safety', 'nopd-bias-demo',
       'shooting-dashboard', 'real-estate-explorer'
     ];
     const knownSet = new Set(KNOWN_ORDER);
