@@ -82,7 +82,7 @@ export default async function handler(req, res) {
       })
     );
 
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     return res.status(200).json(enriched);
   } catch (err) {
     return res.status(500).json({ error: 'Failed to fetch projects', message: err.message });
