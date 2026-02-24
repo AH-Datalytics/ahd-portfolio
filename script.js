@@ -1,13 +1,13 @@
 // Fixed cards (non-Vercel projects, always shown first)
 const FIXED_CARDS = [
   {
-    title: 'Real Time Crime Index',
+    title: 'Real-Time Crime Index',
     url: 'https://www.realtimecrimeindex.com',
     screenshot: 'realtimecrimeindex',
     description: 'Aggregates reported crime data from hundreds of law enforcement agencies nationwide to track crime trends with minimal lag through interactive graphs, tables, and maps.'
   },
   {
-    title: 'Data for Community Trust: Hazel Crest',
+    title: 'Data for Community Trust',
     url: 'https://dataforcommunitytrust.org/hazel-crest',
     screenshot: 'hazel-crest',
     description: 'Public safety data platform for the Village of Hazel Crest, IL, providing transparent information on crime, calls for service, and traffic stops.'
@@ -79,12 +79,13 @@ function createCard(project) {
   }
 
   const shortUrl = project.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  const demoBadge = project.isDemo ? '<span class="card-badge">Demo</span>' : '';
 
   card.innerHTML = `
     <a href="${project.url}" target="_blank" rel="noopener">
       <div class="card-img-wrap"></div>
       <div class="card-body">
-        <div class="card-title">${project.title}</div>
+        <div class="card-title">${demoBadge}${project.title}</div>
         <div class="card-desc">${project.description}</div>
         <span class="card-url">${shortUrl} &rarr;</span>
       </div>
@@ -111,7 +112,7 @@ async function loadProjects() {
     projects.forEach(p => {
       const title = prettifySlug(p.name);
       const description = DESCRIPTIONS[p.name] || p.description || 'Custom data tool built by AH Datalytics.';
-      grid.appendChild(createCard({ title, url: p.url, description, slug: p.name }));
+      grid.appendChild(createCard({ title, url: p.url, description, slug: p.name, isDemo: true }));
     });
   } catch (err) {
     console.error('Failed to load Vercel projects:', err);
