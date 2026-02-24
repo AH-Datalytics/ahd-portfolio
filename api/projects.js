@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
-  const token = process.env.VERCEL_TOKEN;
+  const token = process.env.AHD_VERCEL_TOKEN;
   if (!token) {
-    return res.status(500).json({ error: 'VERCEL_TOKEN not configured' });
+    return res.status(500).json({ error: 'AHD_VERCEL_TOKEN not configured' });
   }
 
   const teamId = 'team_8aw5MZpeCayg8UKqk1oTOW07';
