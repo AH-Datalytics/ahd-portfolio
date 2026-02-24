@@ -28,20 +28,22 @@ export default async function handler(req, res) {
       })
       .map(p => {
         const target = (p.targets && p.targets.production) || {};
-        const url = target.url
-          ? `https://${target.url}`
-          : (p.latestDeployments && p.latestDeployments[0])
-            ? `https://${p.latestDeployments[0].url}`
-            : null;
+        const aliases = (target.alias || []);
 
-        // Try to extract alias (custom domain or .vercel.app)
-        const alias = (target.alias && target.alias.length > 0)
-          ? `https://${target.alias[0]}`
-          : url;
+        // Prefer the shortest alias (usually the clean {name}.vercel.app)
+        let bestUrl = null;
+        if (aliases.length > 0) {
+          const sorted = [...aliases].sort((a, b) => a.length - b.length);
+          bestUrl = `https://${sorted[0]}`;
+        } else if (target.url) {
+          bestUrl = `https://${target.url}`;
+        } else if (p.latestDeployments && p.latestDeployments[0]) {
+          bestUrl = `https://${p.latestDeployments[0].url}`;
+        }
 
         return {
           name: p.name,
-          url: alias || url,
+          url: bestUrl,
           description: p.description || ''
         };
       })
