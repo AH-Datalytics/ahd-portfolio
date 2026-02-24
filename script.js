@@ -30,7 +30,8 @@ const DESCRIPTIONS = {
 
 // URL overrides (when Vercel API returns a hashed/broken URL)
 const URL_OVERRIDES = {
-  'nopd-bias-demo': 'https://nopd-bias-demo.vercel.app'
+  'nopd-bias-demo': 'https://nopd-bias-demo.vercel.app',
+  'real-estate-explorer': 'https://ahd-real-estate-explorer.vercel.app'
 };
 
 // Pretty display names for Vercel project slugs
