@@ -42,7 +42,7 @@ a:hover {
   background: var(--navy);
   color: var(--white);
   text-align: center;
-  padding: 72px 24px 64px;
+  padding: 48px 24px 40px;
 }
 
 .hero-logo {
@@ -213,7 +213,7 @@ a:hover {
 /* === Responsive === */
 @media (max-width: 720px) {
   .hero {
-    padding: 48px 16px 40px;
+    padding: 36px 16px 28px;
   }
 
   .hero-logo {
