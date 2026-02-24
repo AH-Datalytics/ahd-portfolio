@@ -1,3 +1,26 @@
+async function fetchMeta(url) {
+  try {
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'AHD-Portfolio-Bot/1.0' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(5000)
+    });
+    if (!resp.ok) return {};
+    const html = await resp.text();
+
+    const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
+    const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i);
+
+    return {
+      title: titleMatch ? titleMatch[1].trim() : '',
+      description: descMatch ? descMatch[1].trim() : ''
+    };
+  } catch {
+    return {};
+  }
+}
+
 export default async function handler(req, res) {
   const token = process.env.AHD_VERCEL_TOKEN;
   if (!token) {
@@ -19,10 +42,9 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    const projects = (data.projects || [])
+    const projectList = (data.projects || [])
       .filter(p => p.name !== selfProject)
       .filter(p => {
-        // Only include projects with a production deployment URL
         const target = (p.targets && p.targets.production) || {};
         return target.url || (p.latestDeployments && p.latestDeployments.length > 0);
       })
@@ -30,7 +52,6 @@ export default async function handler(req, res) {
         const target = (p.targets && p.targets.production) || {};
         const aliases = (target.alias || []);
 
-        // Prefer the clean {name}.vercel.app alias over hashed/scoped ones
         let bestUrl = null;
         const cleanAlias = aliases.find(a => a === `${p.name}.vercel.app`);
         if (cleanAlias) {
@@ -44,16 +65,25 @@ export default async function handler(req, res) {
           bestUrl = `https://${p.latestDeployments[0].url}`;
         }
 
-        return {
-          name: p.name,
-          url: bestUrl,
-          description: p.description || ''
-        };
+        return { name: p.name, url: bestUrl, description: p.description || '' };
       })
       .filter(p => p.url);
 
+    // Fetch page title + meta description from each project in parallel
+    const enriched = await Promise.all(
+      projectList.map(async (p) => {
+        const meta = await fetchMeta(p.url);
+        return {
+          name: p.name,
+          url: p.url,
+          title: meta.title || '',
+          description: meta.description || p.description || ''
+        };
+      })
+    );
+
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-    return res.status(200).json(projects);
+    return res.status(200).json(enriched);
   } catch (err) {
     return res.status(500).json({ error: 'Failed to fetch projects', message: err.message });
   }

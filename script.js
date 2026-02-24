@@ -115,7 +115,8 @@ async function loadProjects() {
     const projects = await res.json();
 
     projects.forEach(p => {
-      const title = prettifySlug(p.name);
+      // Priority: manual override > API-fetched from page > prettified slug
+      const title = DISPLAY_NAMES[p.name] || p.title || prettifySlug(p.name);
       const url = URL_OVERRIDES[p.name] || p.url;
       const description = DESCRIPTIONS[p.name] || p.description || 'Custom data tool built by AH Datalytics.';
       grid.appendChild(createCard({ title, url, description, slug: p.name, isDemo: true }));
