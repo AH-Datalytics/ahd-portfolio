@@ -35,7 +35,7 @@ const DISPLAY_NAMES = {
   'nola-dashboard': 'NOLA Operations Dashboard',
   'lmpd-analytics': 'Louisville PD Analytics',
   'smc-beach-safety': 'SMC Beach Safety',
-  'nopd-bias-demo': 'NOPD Bias-Free Policing Demo'
+  'nopd-bias-demo': 'NOPD Bias-Free Policing'
 };
 
 function prettifySlug(slug) {
