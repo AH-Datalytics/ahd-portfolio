@@ -33,7 +33,7 @@ const DISPLAY_NAMES = {
   'govdash': 'GovDash',
   'police-staffing-dashboard': 'Police Staffing Dashboard',
   'nola-dashboard': 'NOLA Operations Dashboard',
-  'lmpd-analytics': 'LMPD Analytics',
+  'lmpd-analytics': 'Louisville PD Analytics',
   'smc-beach-safety': 'SMC Beach Safety',
   'nopd-bias-demo': 'NOPD Bias-Free Policing Demo'
 };
