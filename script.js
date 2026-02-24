@@ -26,6 +26,11 @@ const DESCRIPTIONS = {
   'nopd-bias-demo': 'Interactive demonstration of NOPD bias-free policing analytics, visualizing stop, search, and use of force data for compliance monitoring.'
 };
 
+// URL overrides (when Vercel API returns a hashed/broken URL)
+const URL_OVERRIDES = {
+  'nopd-bias-demo': 'https://nopd-bias-demo.vercel.app'
+};
+
 // Pretty display names for Vercel project slugs
 const DISPLAY_NAMES = {
   'nola-crime-dashboard': 'NOLA Crime Dashboard',
@@ -111,8 +116,9 @@ async function loadProjects() {
 
     projects.forEach(p => {
       const title = prettifySlug(p.name);
+      const url = URL_OVERRIDES[p.name] || p.url;
       const description = DESCRIPTIONS[p.name] || p.description || 'Custom data tool built by AH Datalytics.';
-      grid.appendChild(createCard({ title, url: p.url, description, slug: p.name, isDemo: true }));
+      grid.appendChild(createCard({ title, url, description, slug: p.name, isDemo: true }));
     });
   } catch (err) {
     console.error('Failed to load Vercel projects:', err);
