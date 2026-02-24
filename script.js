@@ -42,26 +42,41 @@ function prettifySlug(slug) {
   return DISPLAY_NAMES[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
 
+function microlinkScreenshot(url) {
+  return `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&meta=false&embed=screenshot.url&viewport.width=1280&viewport.height=800`;
+}
+
 function createCard(project) {
   const card = document.createElement('div');
   card.className = 'card';
 
-  // Use local screenshot if we have one, keyed by project slug
   const screenshotKey = project.screenshot || project.slug || '';
-  const imgSrc = screenshotKey ? `/screenshots/${screenshotKey}.png` : '';
+  const localSrc = screenshotKey ? `/screenshots/${screenshotKey}.png` : '';
 
   const img = new Image();
   img.className = 'card-img';
   img.alt = project.title;
   img.loading = 'lazy';
-  if (imgSrc) {
-    img.src = imgSrc;
+
+  if (localSrc) {
+    // Try local screenshot first; on 404 fall back to Microlink API
+    img.src = localSrc;
+    img.onerror = function () {
+      this.onerror = function () {
+        // Microlink also failed — show gradient
+        this.removeAttribute('src');
+        this.style.background = 'linear-gradient(135deg, #123A6C 0%, #169FEB 100%)';
+      };
+      this.src = microlinkScreenshot(project.url);
+    };
+  } else {
+    // No local key — go straight to Microlink
+    img.src = microlinkScreenshot(project.url);
+    img.onerror = function () {
+      this.removeAttribute('src');
+      this.style.background = 'linear-gradient(135deg, #123A6C 0%, #169FEB 100%)';
+    };
   }
-  // On error (missing screenshot), show gradient placeholder
-  img.onerror = function () {
-    this.removeAttribute('src');
-    this.style.background = 'linear-gradient(135deg, #123A6C 0%, #169FEB 100%)';
-  };
 
   const shortUrl = project.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 
