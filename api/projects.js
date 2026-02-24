@@ -30,9 +30,12 @@ export default async function handler(req, res) {
         const target = (p.targets && p.targets.production) || {};
         const aliases = (target.alias || []);
 
-        // Prefer the shortest alias (usually the clean {name}.vercel.app)
+        // Prefer the clean {name}.vercel.app alias over hashed/scoped ones
         let bestUrl = null;
-        if (aliases.length > 0) {
+        const cleanAlias = aliases.find(a => a === `${p.name}.vercel.app`);
+        if (cleanAlias) {
+          bestUrl = `https://${cleanAlias}`;
+        } else if (aliases.length > 0) {
           const sorted = [...aliases].sort((a, b) => a.length - b.length);
           bestUrl = `https://${sorted[0]}`;
         } else if (target.url) {
