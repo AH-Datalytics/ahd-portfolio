@@ -3,11 +3,13 @@ const FIXED_CARDS = [
   {
     title: 'Real Time Crime Index',
     url: 'https://www.realtimecrimeindex.com',
+    screenshot: 'realtimecrimeindex',
     description: 'Aggregates reported crime data from hundreds of law enforcement agencies nationwide to track crime trends with minimal lag through interactive graphs, tables, and maps.'
   },
   {
     title: 'Data for Community Trust: Hazel Crest',
-    url: 'https://www.dataforcommunitytrust.org/hazel-crest',
+    url: 'https://dataforcommunitytrust.org/hazel-crest',
+    screenshot: 'hazel-crest',
     description: 'Public safety data platform for the Village of Hazel Crest, IL, providing transparent information on crime, calls for service, and traffic stops.'
   }
 ];
@@ -36,10 +38,6 @@ const DISPLAY_NAMES = {
   'nopd-bias-demo': 'NOPD Bias-Free Policing Demo'
 };
 
-function screenshotUrl(siteUrl) {
-  return `https://image.thum.io/get/width/640/crop/900/${siteUrl}`;
-}
-
 function prettifySlug(slug) {
   return DISPLAY_NAMES[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 }
@@ -48,14 +46,21 @@ function createCard(project) {
   const card = document.createElement('div');
   card.className = 'card';
 
+  // Use local screenshot if we have one, keyed by project slug
+  const screenshotKey = project.screenshot || project.slug || '';
+  const imgSrc = screenshotKey ? `/screenshots/${screenshotKey}.png` : '';
+
   const img = new Image();
   img.className = 'card-img';
   img.alt = project.title;
   img.loading = 'lazy';
-  img.src = screenshotUrl(project.url);
+  if (imgSrc) {
+    img.src = imgSrc;
+  }
+  // On error (missing screenshot), show gradient placeholder
   img.onerror = function () {
+    this.removeAttribute('src');
     this.style.background = 'linear-gradient(135deg, #123A6C 0%, #169FEB 100%)';
-    this.src = '';
   };
 
   const shortUrl = project.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
@@ -91,7 +96,7 @@ async function loadProjects() {
     projects.forEach(p => {
       const title = prettifySlug(p.name);
       const description = DESCRIPTIONS[p.name] || p.description || 'Custom data tool built by AH Datalytics.';
-      grid.appendChild(createCard({ title, url: p.url, description }));
+      grid.appendChild(createCard({ title, url: p.url, description, slug: p.name }));
     });
   } catch (err) {
     console.error('Failed to load Vercel projects:', err);

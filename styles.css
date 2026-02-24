@@ -46,9 +46,11 @@ a:hover {
 }
 
 .hero-logo {
-  height: 64px;
+  height: 72px;
   width: auto;
   margin-bottom: 28px;
+  /* Logo is navy on transparent — invert to white for navy background */
+  filter: brightness(0) invert(1);
 }
 
 .hero h1 {
@@ -211,15 +213,37 @@ a:hover {
 /* === Responsive === */
 @media (max-width: 720px) {
   .hero {
-    padding: 48px 20px 44px;
+    padding: 48px 16px 40px;
+  }
+
+  .hero-logo {
+    height: 56px;
   }
 
   .hero h1 {
-    font-size: 1.75rem;
+    font-size: 1.6rem;
   }
 
   .hero-sub {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .about {
+    padding: 40px 16px;
+  }
+
+  .about p {
+    font-size: 0.95rem;
+    text-align: left;
+  }
+
+  .portfolio {
+    padding: 48px 16px 56px;
+  }
+
+  .portfolio h2 {
+    font-size: 1.4rem;
+    margin-bottom: 24px;
   }
 
   .grid {
@@ -227,8 +251,38 @@ a:hover {
     gap: 20px;
   }
 
-  .portfolio h2 {
-    font-size: 1.4rem;
-    margin-bottom: 28px;
+  .card-body {
+    padding: 16px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-desc {
+    font-size: 0.85rem;
+  }
+
+  .contact {
+    padding: 40px 16px;
+  }
+
+  .contact h2 {
+    font-size: 1.3rem;
+  }
+
+  .email-link {
+    padding: 10px 24px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero h1 {
+    font-size: 1.35rem;
+  }
+
+  .container {
+    padding: 0 12px;
   }
 }
