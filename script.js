@@ -23,7 +23,9 @@ const DESCRIPTIONS = {
   'nola-dashboard': 'Centralized operations dashboard for the City of New Orleans, consolidating key municipal metrics and departmental data.',
   'lmpd-analytics': 'Citizen-facing platform for exploring Louisville Metro Police stop data, enabling public transparency into law enforcement patterns.',
   'smc-beach-safety': 'Real-time beach conditions monitor for San Mateo County, pulling wave, wind, and water temperature data from NOAA and NWS.',
-  'nopd-bias-demo': 'Interactive demonstration of NOPD bias-free policing analytics, visualizing stop, search, and use of force data for compliance monitoring.'
+  'nopd-bias-demo': 'Interactive demonstration of NOPD bias-free policing analytics, visualizing stop, search, and use of force data for compliance monitoring.',
+  'shooting-dashboard': 'Year-to-date shooting incident tracker across major US cities, built on open data portals with filtering, comparison, and export tools.',
+  'real-estate-explorer': 'Interactive real estate market explorer with state-level pricing trends, market statistics, and multiple visualization modes.'
 };
 
 // URL overrides (when Vercel API returns a hashed/broken URL)
@@ -40,7 +42,9 @@ const DISPLAY_NAMES = {
   'nola-dashboard': 'NOLA Operations Dashboard',
   'lmpd-analytics': 'Louisville PD Analytics',
   'smc-beach-safety': 'SMC Beach Safety',
-  'nopd-bias-demo': 'NOPD Bias-Free Policing'
+  'nopd-bias-demo': 'NOPD Bias-Free Policing',
+  'shooting-dashboard': 'City Shooting Tracker',
+  'real-estate-explorer': 'Real Estate Explorer'
 };
 
 function prettifySlug(slug) {
@@ -114,8 +118,21 @@ async function loadProjects() {
     if (!res.ok) throw new Error('API error');
     const projects = await res.json();
 
-    projects.forEach(p => {
-      // Priority: manual override > API-fetched from page > prettified slug
+    // Render known projects in fixed order, then append any new ones at the end
+    const KNOWN_ORDER = [
+      'nola-crime-dashboard', 'fpa-lens', 'govdash', 'police-staffing-dashboard',
+      'nola-dashboard', 'lmpd-analytics', 'smc-beach-safety', 'nopd-bias-demo',
+      'shooting-dashboard', 'real-estate-explorer'
+    ];
+    const knownSet = new Set(KNOWN_ORDER);
+    const sorted = [
+      ...KNOWN_ORDER.filter(name => projects.some(p => p.name === name)),
+      ...projects.filter(p => !knownSet.has(p.name)).map(p => p.name)
+    ];
+
+    sorted.forEach(name => {
+      const p = projects.find(pr => pr.name === name);
+      if (!p) return;
       const title = DISPLAY_NAMES[p.name] || p.title || prettifySlug(p.name);
       const url = URL_OVERRIDES[p.name] || p.url;
       const description = DESCRIPTIONS[p.name] || p.description || 'Custom data tool built by AH Datalytics.';
