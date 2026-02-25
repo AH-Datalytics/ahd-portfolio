@@ -16,7 +16,7 @@ const FIXED_CARDS = [
 
 // Human-written descriptions for known Vercel projects
 const DESCRIPTIONS = {
-  'nola-crime-dashboard': 'Interactive dashboard tracking major crime incidents across New Orleans with district-level filtering, year-over-year trends, and an AI-powered assistant.',
+  'nola-public-safety': 'Public safety tracking for the New Orleans City Council, covering crime incidents, response times, stop and search, and use of force data.',
   'fpa-lens': 'Transparency dashboard for the Southeast Louisiana Flood Protection Authority, displaying system readiness, finances, maintenance, and safety records.',
   'govdash': 'Leadership intelligence platform providing government officials with data-driven insights for strategic decision-making.',
   'police-staffing-dashboard': 'Staffing optimization tool that calculates optimal patrol levels by analyzing calls-for-service data, unit configuration, and demand patterns.',
@@ -36,7 +36,7 @@ const URL_OVERRIDES = {
 
 // Pretty display names for Vercel project slugs
 const DISPLAY_NAMES = {
-  'nola-crime-dashboard': 'NOLA Crime Dashboard',
+  'nola-public-safety': 'NOLA Public Safety Dashboard',
   'fpa-lens': 'FPA Lens',
   'govdash': 'GovDash',
   'police-staffing-dashboard': 'Police Staffing Dashboard',
@@ -122,13 +122,14 @@ async function loadProjects() {
     // Render known projects in fixed order, then append any new ones at the end
     const KNOWN_ORDER = [
       'lmpd-analytics', 'fpa-lens', 'govdash', 'police-staffing-dashboard',
-      'nola-dashboard', 'smc-beach-safety', 'nola-crime-dashboard', 'shooting-dashboard',
+      'nola-dashboard', 'smc-beach-safety', 'nola-public-safety', 'shooting-dashboard',
       'nopd-bias-demo', 'real-estate-explorer'
     ];
+    const HIDDEN = new Set(['nola-crime-dashboard']);
     const knownSet = new Set(KNOWN_ORDER);
     const sorted = [
       ...KNOWN_ORDER.filter(name => projects.some(p => p.name === name)),
-      ...projects.filter(p => !knownSet.has(p.name)).map(p => p.name)
+      ...projects.filter(p => !knownSet.has(p.name) && !HIDDEN.has(p.name)).map(p => p.name)
     ];
 
     sorted.forEach(name => {
