@@ -125,7 +125,7 @@ async function loadProjects() {
       'nola-dashboard', 'smc-beach-safety', 'nola-public-safety', 'shooting-dashboard',
       'nopd-bias-demo', 'real-estate-explorer'
     ];
-    const HIDDEN = new Set(['nola-crime-dashboard']);
+    const HIDDEN = new Set(['nola-crime-dashboard', 'dist-xi-seven-52']);
     const knownSet = new Set(KNOWN_ORDER);
     const sorted = [
       ...KNOWN_ORDER.filter(name => projects.some(p => p.name === name)),
